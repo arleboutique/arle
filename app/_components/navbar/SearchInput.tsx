@@ -16,11 +16,6 @@ const SearchInput = ({ className, onSearch }: SearchInputProps) => {
   const value = searchParams.get("search");
   const { push: redirect } = useRouter();
 
-  const handleKeyDown = (event: React.ChangeEvent<HTMLInputElement>) => {
-    redirect(
-      createUrl("/listing", makeNewParams("search", event.currentTarget.value, searchParams))
-    );
-  };
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
@@ -31,22 +26,22 @@ const SearchInput = ({ className, onSearch }: SearchInputProps) => {
       { scroll: false }
     );
   };
+
   return (
-    <div className={cn("flex items-center justify-between h-9 w-2/5 rounded border pl-3 py-[6px]", className)}>
+    <div className={cn("flex items-center justify-between h-8 w-2/5 rounded border pl-3 py-[6px]", className)}>
       <form onSubmit={onSubmit} className="flex w-full h-full items-center">
         <input
           // onKeyDown={handleKeyDown}
-          className="w-full focus-visible:outline-none placeholder:text-[#a19ca3] "
+          className="w-full focus-visible:outline-none placeholder:text-gray-400 font-inter placeholder:font-light text-[14px] text-gray-700"
           placeholder="Busca productos, marcas y más..."
           name="search"
           type="text"
           defaultValue={value || ""}
-          onChange={handleKeyDown}
         />
       </form>
-      <Link href={`/listing?search=${value}`} className="border-l pl-2 pr-3 h-full">
-        <FiSearch className="w-[18px] h-[18px] mt-[2px]"/> 
-      </Link>
+      <button type="submit" onClick={onSearch} className="border-l pl-2 pr-3 h-full">
+        <FiSearch className="w-[18px] h-[18px] "/> 
+      </button>
     </div>
   );
 };

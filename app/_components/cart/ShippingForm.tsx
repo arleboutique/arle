@@ -1,79 +1,91 @@
+
+
 const ShippingForm = () => {
   const availableCountries = ["Colombia"];
   return (
-    <form className="flex flex-col gap-4">
+    <section className="flex flex-col gap-3 py-6">
       <h3 className="text-zinc-800 text-xl font-bold font-tajawal leading-normal">
         Información de envío
       </h3>
+      <p className="-mt-4 font-tajawal font-light text-base text-gray-600">(*) Campo requerido</p>
 
       <InputComponent
-        name="nombre"
-        placeholder="Daniel Guillermo Bustidas"
-        title="Nombre completo"
+        name="name"
+        title="Nombres y Apellidos *"
+        autocomplete="name"
       />
 
       <InputComponent
-        name="identificacion"
-        placeholder="123456789"
-        title="Identificación"
+        name="id"
+        title="Identificación *"
         type="id"
+        autocomplete="legal-id"
       />
 
       <InputComponent
-        name="telefono"
-        placeholder="3001234567"
-        title="Teléfono"
+        name="phone"
+        title="Teléfono *"
         type="number"
+        autocomplete="tel"
       />
 
       <InputComponent
         name="email"
         placeholder="email@ejemplo.com.co"
-        title="Nombre completo"
+        title="Correo electrónico *"
         type="email"
+        autocomplete="email"
       />
 
       <InputComponent
         name="pais"
         type="select"
+        autocomplete="country-name"
         options={availableCountries}
         title="País"
       />
 
       <div className="flex justify-between gap-2">
-        <InputComponent name="ciudad" placeholder="Cali" title="Ciudad" />
+        <InputComponent 
+        name="ciudad" 
+        title="Ciudad *" />
+
         <InputComponent
           name="codigoPostal"
-          placeholder="760002"
           title="Código Postal"
+          autocomplete="postal-code"
         />
       </div>
+        <InputComponent name="departamento" title="Departamento *" />
       <InputComponent
         name="direccion"
-        placeholder="Cra. 98 #16-200"
-        title="Dirección de envío"
+        title="Dirección de envío *"
+        autocomplete="street-address"
       />
-    </form>
+    </section>
   );
 };
 
 type TInputComponent =
   | {
+      autocomplete?: string;
       name: string;
       type?: "text" | "number" | "id" | "email";
       title?: string;
-      placeholder: string;
+      placeholder?: string;
       options?: string[];
     }
   | {
-      name: string;
-      type?: "select";
-      title?: string;
-      placeholder?: string;
-      options: string[]; // This prop is required when type is "pais"
-    };
+    autocomplete?: string;
+    name: string;
+    type?: "select";
+    title?: string;
+    placeholder?: string;
+    options: string[]; // This prop is required when type is "pais"
+  };
 
 const InputComponent = ({
+  autocomplete,
   name,
   type = "text",
   title,
@@ -84,15 +96,16 @@ const InputComponent = ({
     return (
       <label
         htmlFor={name}
-        className="text-zinc-800 text-lg font-medium font-tajawal leading-snug flex flex-col"
+        className=" flex flex-col"
       >
-        <h4>{title || name}</h4>
+        <h4 className="text-zinc-800 text-lg font-medium font-tajawal leading-snug">{title || name}</h4>
         <input
-          className="w-full h-9 px-3 py-1.5 bg-white rounded border border-stone-300 focus:outline-none focus:border-black"
+          className="w-full focus-visible:outline-arle-blue h-9 px-3 bg-white rounded border border-stone-300"
+          autoComplete={autocomplete || ""}
           type={type}
           name={name}
           id={name}
-          placeholder={placeholder}
+          placeholder={placeholder || ""}
         />
       </label>
     );
@@ -115,7 +128,8 @@ const InputComponent = ({
           </select>
 
           <input
-            className="w-full h-9 px-3 bg-white rounded-tr rounded-br border border-stone-300"
+            className="w-full focus-visible:outline-arle-blue h-9 px-3 bg-white rounded border border-stone-300"
+            autoComplete={autocomplete}
             type="number"
             name={name}
             id={name}
@@ -128,11 +142,11 @@ const InputComponent = ({
     return (
       <label
         htmlFor={name}
-        className="text-zinc-800 text-lg font-medium font-tajawal leading-snug flex flex-col"
+        className="flex flex-col"
       >
-        <h4>{title || name}</h4>
+        <h4 className="text-zinc-800 text-lg font-medium font-tajawal leading-snug ">{title || name}</h4>
         <select
-          className="w-full h-9 px-3 py-1.5 bg-white rounded border border-stone-300 focus:outline-none focus:border-black"
+          className="w-full focus-visible:outline-arle-blue h-9 px-3 bg-white rounded border border-stone-300"
           name={name}
           id={name}
         >

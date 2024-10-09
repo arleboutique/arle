@@ -7,6 +7,10 @@
   display: none;
 }
 
+table, th, td, tr {
+  border: 1px solid black;
+}
+
 
 @layer base {
   :root {
@@ -21,6 +25,9 @@
   body {
     @apply bg-background;
     font-feature-settings: 'rlig' 1, 'calt' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
+    -o-font-smoothing: antialiased;
   }
   .no-scrollbar::-webkit-scrollbar{
     width: 5px;
@@ -35,6 +42,68 @@
   }
   .no-scrollbar::-webkit-scrollbar-button{
     display: none;
+  }
+  .small-scrollbar::-webkit-scrollbar{
+    width: 7px;
+    height: 10px;
+  }
+  .small-scrollbar::-webkit-scrollbar-thumb{
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
+  }
+  .small-scrollbar::-webkit-scrollbar-corner{
+    background-color: #f1f1f1;
+  }
+  .small-scrollbar::-webkit-scrollbar-button{
+    display: none;
+  }
+  .lux-title{
+    @apply font-jomolhari font-normal tracking-wide drop-shadow-[-1px_2px_4px_rgba(0,0,0,0.5)] cursor-default;
+  }
+  .text-shadow{
+    @apply drop-shadow-[-1px_2px_4px_rgba(0,0,0,0.5)]
+  }
+  .normal-subtitle{
+    @apply font-tajawal font-extralight text-xl xs:text-2xl lg:text-3xl align-middle leading-none drop-shadow-[-1px_2px_2px_rgba(0,0,0,0.5)] cursor-default;
+  }
+  .button-float{
+    @apply hover:-translate-y-0.5 hover:shadow-[0_2px_5px_-1px_rgba(0,0,0,0.5)] active:translate-y-0 active:shadow-none disabled:hover:translate-y-0 disabled:hover:shadow-none;
+  }
+  .section-title{
+    @apply font-jomolhari font-normal tracking-wide cursor-default text-3xl;
+  }
+  .section-text{
+    @apply text-lg font-light font-tajawal leading-tight text-justify whitespace-pre-line;
+  }
+  .content-title{
+    @apply font-tajawal font-semibold leading-tight text-gray-500 text-base lg:text-lg lg:leading-tight;
+  }
+  .content-text{
+    @apply font-tajawal leading-tight text-base font-light text-gray-600 lg:text-lg lg:leading-tight text-justify whitespace-pre-line;
+  }
+  .about-title{
+    @apply font-jomolhari tracking-tight leading-snug text-2xl xs:text-3xl text-gray-800
+  }
+  .about-text{
+    @apply font-tajawal leading-tight font-normal text-gray-600 text-base sm:text-lg sm:leading-tight text-justify whitespace-pre-line
+  }
+  .about-title-white{
+    @apply font-jomolhari tracking-tight leading-snug text-2xl xs:text-3xl text-gray-200
+  }
+  .about-text-white{
+    @apply font-tajawal leading-tight font-normal text-gray-300 text-base sm:text-lg sm:leading-tight text-justify whitespace-pre-line
+  }
+  .portable-text{
+    @apply [&_h1]:font-bold [&_h1]:text-2xl [&_h1]:text-gray-800 [&_h2]:font-semibold [&_h2]:text-xl [&_h2]:text-gray-700 [&_p]:font-normal [&_p]:text-base [&_p]:text-gray-700 whitespace-pre-line
+  }
+  .default-paddings{
+    @apply px-4 xs:px-8 sm:px-14 md:px-20;
+  }
+  .light-button{
+    @apply py-1.5 text-gray-800 text-base font-inter font-medium bg-white w-full max-w-sm text-center hover:underline underline-offset-2 hover:bg-slate-100 disabled:hover:bg-white disabled:hover:no-underline disabled:opacity-70;
+  }
+  .dark-button{
+    @apply py-1.5 text-gray-200 text-base font-inter font-medium bg-black w-full max-w-sm text-center hover:underline underline-offset-2  hover:bg-gray-900 disabled:hover:bg-black disabled:hover:no-underline disabled:opacity-70;
   }
 }
 

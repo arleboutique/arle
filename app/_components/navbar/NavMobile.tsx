@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import Burger from "./Burger";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
@@ -8,12 +7,14 @@ import Link from "next/link";
 import { LuShoppingCart } from "react-icons/lu";
 import { useCartStore } from "../cart/store";
 import Menu from "./menu";
+import ArleBasicLogo from "../ArleBasicLogo";
 
 type MobileNavBarProps = {
   className?: string;
+  marca?: string | null;
 };
 
-const MobileNavBar = ({ className }: MobileNavBarProps) => {
+const MobileNavBar = ({ className, marca }: MobileNavBarProps) => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const pathname = usePathname();
 
@@ -21,10 +22,12 @@ const MobileNavBar = ({ className }: MobileNavBarProps) => {
 
   return (
     <nav
-      className={`${className} fixed z-30 h-[60px] w-full px-8 bg-color-bg-surface-1-default text-black flex justify-between items-center`}
+      className={`${className} fixed z-30 h-[50px] w-full px-4 xs:px-8 bg-color-bg-surface-1-default text-black flex justify-between items-center border-b border-zinc-200`}
     >
       <Link href="/">
-        <Image src={"/ArleBasicLogo.svg"} width={80} height={30} alt="logo" />
+        <div className="w-[85px]">
+          <ArleBasicLogo />
+        </div>
       </Link>
       <div className="flex relative items-center gap-5 w-fit">
         <Kart />
@@ -35,7 +38,7 @@ const MobileNavBar = ({ className }: MobileNavBarProps) => {
           closeNav={() => setIsNavOpen(false)}
         />
 
-        <Menu isMenuOpen={isNavOpen} setIsMenu={setIsNavOpen} />
+        <Menu marca={marca} isMenuOpen={isNavOpen} setIsMenu={setIsNavOpen} />
       </div>
     </nav>
   );
@@ -44,17 +47,18 @@ const MobileNavBar = ({ className }: MobileNavBarProps) => {
 export default MobileNavBar;
 
 const Kart = () => {
-  const {toggleCart, items} = useCartStore();
+  const { toggleCart, items } = useCartStore();
   return (
-    <div className="w-fit h-9 justify-start items-center gap-4 inline-flex cursor-pointer" onClick={() => toggleCart()}>
+    <div
+      className="w-fit h-9 justify-start items-center gap-4 inline-flex cursor-pointer"
+      onClick={() => toggleCart()}
+    >
       <div className="p-2 bg-color-bg-surface-0-default justify-center items-center flex relative">
         <div className="w-5 h-5 justify-center items-center gap-1 flex">
-            <LuShoppingCart className="w-[18px] h-[18px]" />
+          <LuShoppingCart className="w-[18px] h-[18px] stroke-gray-600" />
         </div>
-        <RedDot  active={items.length > 0} position="topRight"/>
+        <RedDot active={items.length > 0} position="topRight" />
       </div>
     </div>
   );
 };
-
-

@@ -7,6 +7,14 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    screens: {
+      'xs': '450px',
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+    },
     extend: {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -25,15 +33,16 @@ const config: Config = {
         "color-bg-surface-0-default": "#f5f5f5",
         beige: "#EDE7DE",
         "arle-blue": "#101432",
-        "guidelines-on-color-beige": "#CBBBA0",
+        "arle-beige": "#CBBBA0",
       },
       fontFamily: {
-        inter: "var(--font-inter)",
-        lora: "var(--font-lora)",
-        raleway: "var(--font-raleway)",
+        crimson: "var(--crimson-pro)",
         tajawal: "var(--font-tajawal)",
+        inter: "var(--font-inter)",
         kanit: "var(--font-kanit)",
-        crimson: "var(--crimson-text)",
+        raleway: "var(--font-raleway)",
+        jomolhari: "var(--font-jomolhari)",
+        play: "var(--font-play)",
       },
       borderRadius: {
         lg: `var(--radius)`,
@@ -69,6 +78,17 @@ const config: Config = {
           "0%": { opacity: "0.4" },
           "100%": { opacity: "0" },
         },
+        vote: {
+          '0%, 100%': {
+            transform: 'rotate(0deg)',
+          },
+          '25%': {
+            transform: 'rotate(-30deg)',
+          },
+          '75%': {
+            transform: 'rotate(30deg)',
+          },
+        },
       },
       animation: {
         "slide-in": "slide-in 0.2s ease-out",
@@ -77,7 +97,9 @@ const config: Config = {
         "slide-out-right": "slide-out-right 0.2s ease-out",
         "fade-in": "fade-in 0.2s ease-out",
         "fade-out": "fade-out 0.2s ease-out",
+        vote: 'vote 1s ease-in-out',
       },
+      
     },
   },
   plugins: [
