@@ -2,25 +2,50 @@ import { z } from "zod";
 import sanityClient from "../sanityClient";
 import { baseBlockSchema } from "./pages/trabajaConNosotrosQueries";
 
+const zodLegalSchema = z.object({
+  terminosCondiciones: z.array(baseBlockSchema).optional().nullable(),
+  politicasPrivacidad: z.array(baseBlockSchema).optional().nullable(),
+  garantiasCambiosDevoluciones: z.array(baseBlockSchema).optional().nullable(),
+  politicasEnvio: z.array(baseBlockSchema).optional().nullable(),
+  politicasCookies: z.array(baseBlockSchema).optional().nullable(),
+})
+
+export type TLegalSchema = z.infer<typeof zodLegalSchema>;
+
+const imagenSchema = z.object({
+  alt: z.string(),
+  url: z.string(),
+});
+
+const popupBannerSchema = z.object({
+  usarPopup: z.boolean(),
+  opciones: z.object({
+    boton: z.string(),
+    link: z.string(),
+    imagen: imagenSchema,
+  }).optional().nullable(),
+});
+
+export type TPopUpBanner = z.infer<typeof popupBannerSchema>;
+
 const zodConfigSchema = z.object({
   marcaPromocionada: z.object({
     titulo: z.string(),
   }).optional().nullable(),
   linksSociales: z.array(
     z.object({
-      titulo: z.string(),
+      redSocial: z.string(),
       url: z.string(),
     })
   ).optional().nullable(),
   mostrarCodigoDeDescuento: z.boolean(),
-  legal: z.object({
-    terminosCondiciones: z.array(baseBlockSchema).optional().nullable(),
-    politicasPrivacidad: z.array(baseBlockSchema).optional().nullable(),
-    garantiasCambiosDevoluciones: z.array(baseBlockSchema).optional().nullable(),
-    politicasEnvio: z.array(baseBlockSchema).optional().nullable(),
-    politicasCookies: z.array(baseBlockSchema).optional().nullable(),
-  })
+  legal: zodLegalSchema,
+  popup: popupBannerSchema,
+
 });
+
+
+export type TSiteSettings = z.infer<typeof zodConfigSchema>;
 
 export const getSiteSettings = async () => {
   try {
@@ -30,8 +55,8 @@ export const getSiteSettings = async () => {
       "marcaPromocionada": marcaPromocionada->{
         titulo,
       },
-      "linksSociales": linksSociales[]{
-        titulo,
+      "linksSociales": socialLinks[]{
+        redSocial,
         url,
       },
       mostrarCodigoDeDescuento,
@@ -41,6 +66,17 @@ export const getSiteSettings = async () => {
         garantiasCambiosDevoluciones,
         politicasEnvio,
         politicasCookies,
+      },
+      "popup": popup {
+        usarPopup,
+        "opciones": opciones {
+          boton,
+          link,
+          "imagen": imagen {
+            alt,
+            "url": asset -> url
+          }
+        }
       }
     }
     `);
@@ -73,6 +109,7 @@ export const getSiteSettingsMetadata = async () => {
       `);
   
       const parsedResult = zodMetaSchema.safeParse(result);
+
   
       if (!parsedResult.success) {
         throw new Error(parsedResult.error.message);
