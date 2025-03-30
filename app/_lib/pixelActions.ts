@@ -58,7 +58,7 @@ type TUserData = {
   fbc: string | null;
   fbp: string | null;
   fb_login_id: string | null;
-  external_id: string;
+  external_id: string | null;
   client_ip_address?: string; // Hacemos este campo opcional
 }
 
@@ -76,8 +76,6 @@ export const pagePixelView = async (clientData: TClientData, externalId: string,
   const fbc = cookieStore.get('_fbc')?.value || fbclid;
   const fbp = cookieStore.get('_fbp')?.value || null;
   const fbLoginId = cookieStore.get('_fb_login_id')?.value || null;
-
-  console.log({fbc});
 
   const userData: TUserData = {
     client_user_agent: userAgent,
@@ -127,7 +125,7 @@ export const pagePixelView = async (clientData: TClientData, externalId: string,
   });
 
   if (!postReq.ok) {
-    console.error("Failed to send event to Pixel API", await postReq.text());
+    console.error(`Failed to send event to Pixel API - Home View ${userData}}`, await postReq.text());
   } else {
     console.log("Home View");
   }
@@ -206,7 +204,7 @@ export const productPixelView = async ({
   });
 
   if (!postReq.ok) {
-    console.error("Failed to send event to Pixel API", await postReq.text());
+    console.error(`Failed to send event to Pixel API - view Content ${userData}}`, await postReq.text());
   } else {
     console.log("New Product View");
   }
@@ -279,7 +277,7 @@ export const addedToCartPixelView = async ({
   });
 
   if (!postReq.ok) {
-    console.error("Failed to send event to Pixel API", await postReq.text());
+    console.error(`Failed to send event to Pixel API - Add to cart ${userData}}`, await postReq.text());
   } else {
     console.log("Added to Cart");
   }
@@ -349,7 +347,7 @@ export const initiatePixelCheckoutView = async (data: TPurchaseData) => {
   });
 
   if (!postReq.ok) {
-    console.error("Failed to send event to Pixel API", await postReq.text());
+    console.error(`Failed to send event to Pixel API - Checkout initiate ${userData}}`, await postReq.text());
   } else {
     console.log("Initiated checkout");
   }
@@ -360,10 +358,7 @@ export const initiatePixelAddiPurchaseView = async (data: TPurchaseData) => {
 
   const userAgent = headers().get('user-agent');
   const ip = getIp();
-  const cookieStore = cookies();
-  const fbc = cookieStore.get('_fbc')?.value || data.fbclid as string | null;
-  const fbp = cookieStore.get('_fbp')?.value || null;
-  const fbLoginId = cookieStore.get('_fb_login_id')?.value || null;
+  const fbc = data.fbclid as string | null;
 
   const email = await hashString(data.email);
   const phone = await hashString(data.phone);
@@ -375,8 +370,8 @@ export const initiatePixelAddiPurchaseView = async (data: TPurchaseData) => {
     fn: [`${name}`],
     client_user_agent: userAgent,
     fbc: fbc,
-    fbp: fbp,
-    fb_login_id: fbLoginId,
+    fbp: null,
+    fb_login_id: null,
     external_id: data.externalId,
   };
 
@@ -410,7 +405,7 @@ export const initiatePixelAddiPurchaseView = async (data: TPurchaseData) => {
   });
 
   if (!postReq.ok) {
-    console.error("Failed to send event to Pixel API", await postReq.text());
+    console.error(`Failed to send event to Pixel API - Addi Purchase ${userData}}`, await postReq.text());
   } else {
     console.log("Compra exitosa");
   }
@@ -418,15 +413,12 @@ export const initiatePixelAddiPurchaseView = async (data: TPurchaseData) => {
 
 export const initiateWompiPurchaseView = async (
   data: TWompiRequest["data"],
-  externalId: string,
+  externalId: string | null,
   fbclid: string | null | undefined,
 ) => {
   const userAgent = headers().get('user-agent');
   const ip = getIp();
-  const cookieStore = cookies();
-  const fbc = cookieStore.get('_fbc')?.value || fbclid as string | null;
-  const fbp = cookieStore.get('_fbp')?.value || null;
-  const fbLoginId = cookieStore.get('_fb_login_id')?.value || null;
+  const fbc = fbclid as string | null;
 
   const email = await hashString(data.transaction.customer_email);
   const phone = await hashString(data.transaction.customer_data.phone_number);
@@ -440,8 +432,8 @@ export const initiateWompiPurchaseView = async (
     fn: [`${name}`],
     client_user_agent: userAgent,
     fbc: fbc,
-    fbp: fbp,
-    fb_login_id: fbLoginId,
+    fbp: null,
+    fb_login_id: null,
     external_id: externalId,
   };
 
@@ -475,7 +467,7 @@ export const initiateWompiPurchaseView = async (
   });
 
   if (!postReq.ok) {
-    console.error("Failed to send event to Pixel API", await postReq.text());
+    console.error(`Failed to send event to Pixel API - wompi purchase ${userData}}`, await postReq.text());
   } else {
     console.log("Compra exitosa");
   }

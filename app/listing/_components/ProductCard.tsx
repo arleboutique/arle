@@ -40,21 +40,23 @@ const ProductoCard = ({
     producto.variantes[0]
   );
   const pricing: TPricing = {
-    precioConDescuento: selectedVariant.precioConDescuento
-      ? colombianPriceStringToNumber(selectedVariant.precioConDescuento)
-      : undefined,
+    precioConDescuento: selectedVariant.precioConDescuento ? colombianPriceStringToNumber(selectedVariant.precioConDescuento) : undefined,
     precioSinDescuento: colombianPriceStringToNumber(selectedVariant.precio),
-    timedDiscountPrice: discount
-      ? parseFloat(
-        (
-          (1 - +discount.porcentaje / 100) *
-          colombianPriceStringToNumber(selectedVariant.precio)
-        ).toFixed(0)
-      )
-      : undefined,
+    timedDiscountPrice: discount ? parseFloat(((1 - +discount.porcentaje / 100) * colombianPriceStringToNumber(selectedVariant.precio)).toFixed(0)) : undefined,
     finalPrice: 0,
-    discountTypeUsed: "none",
-  };
+    discountTypeUsed: "none"
+  }
+
+  if (pricing.timedDiscountPrice) {
+    pricing.finalPrice = pricing.timedDiscountPrice;
+    pricing.discountTypeUsed = "timedDiscount";
+  } else if (pricing.precioConDescuento) {
+    pricing.finalPrice = pricing.precioConDescuento;
+    pricing.discountTypeUsed = "discountedPrice";
+  } else {
+    pricing.finalPrice = pricing.precioSinDescuento;
+    pricing.discountTypeUsed = "none";
+  }
 
   if (pricing.timedDiscountPrice) {
     pricing.finalPrice = pricing.timedDiscountPrice;
@@ -86,7 +88,7 @@ const ProductoCard = ({
 
   return (
     <>
-      {selectedVariant.unidadesDisponibles <= 0 ? (
+      {/* {selectedVariant.unidadesDisponibles <= 0 ? (
         <Labels
           label={"Agotado"}
           className="left-1/2 z-[21] transform -translate-x-1/2 -translate-y-1/2"
@@ -104,7 +106,7 @@ const ProductoCard = ({
             className="left-1/2 z-[21] transform -translate-x-1/2 -translate-y-1/2"
           />
         )
-      )}
+      )} */}
       <CardLayout
         pricing={pricing}
         product={producto}
@@ -176,10 +178,22 @@ const CardLayout = ({
       ? (product as TReloj).variantes[0].imagenes[0].alt!
       : (product as TGafa).variantes[0].imagenes[0].alt!;
 
+  const discountPercent = pricing.precioConDescuento ? Math.round((1 - (pricing.precioConDescuento / pricing.precioSinDescuento)) * 100) : null
 
   return (
     <>
-      <section className="h-full w-full overflow-hidden">
+      <section className="h-full w-full overflow-hidden relative">
+        {/* { discountPercent && (
+          <article className="absolute top-0 left-1/2 -translate-x-1/2 z-20 bg-black text-white px-3 pt-2 flex flex-col items-center font-tajawal">
+            <span className="whitespace-nowrap font-bold xs:text-lg sm:text-xl">{discountPercent}% OFF</span>
+          </article>
+        )} */}
+        {/* <div className="z-10 absolute top-0 left-1/2 -translate-x-1/2 flex w-full justify-center pb-2">
+            <article className="w-fit flex flex-col items-center font-tajawal text-white bg-[#AE3434] rounded-md px-2 pb-1 pt-2">
+              <span className="whitespace-nowrap font-medium text-sm leading-none">Te llega HOY en Cali</span>
+              <span className="leading-none whitespace-nowrap text-xs font-medium">otras ciudades 48h.</span>
+            </article>
+        </div> */}
         {(isPerfume(product) && product.variantes[0].imagenes.length > 1) ||
           (isReloj(product) && product.variantes[0].imagenes.length > 1) ||
           (isGafa(product) && product.variantes[0].imagenes.length > 1) ? (
@@ -202,8 +216,8 @@ const CardLayout = ({
               alt={
                 imgAlt
               }
-              width={250}
-              height={250}
+              width={500}
+              height={500}
               className="object-contain h-full w-full"
               />
           </section>
@@ -211,21 +225,23 @@ const CardLayout = ({
         )}
       </section >
 
-      <section className=" flex-1 justify-end font-tajawal flex flex-col gap-1">
+      <section className=" flex-1 justify-end font-tajawal flex flex-col gap-1 relative">
+          
         <Link href={product.slug} className="flex flex-col gap-0.5">
+          
           <h2 className="leading-none text-lg md:text-xl md:leading-none font-bold  text-gray-800 capitalize group-hover:underline underline-offset-2">
             {product.marca}
           </h2>
           <h3 className="text-md md:text-lg md:leading-none font-medium text-gray-700 leading-none">
             {isPerfumePremium(product)
-              ? `${product.parteDeUnSet ? "Set " : ""}${product.titulo} - ${product.detalles.concentracion}`
+              ? `${product.parteDeUnSet ? "Set " : ""}${product.titulo} - ${product.marca === "Tarjeta de Regalo" ? "" : product.detalles.concentracion}`
               : isPerfumeLujo(product)
                 ? `${product.parteDeUnSet ? "Set " : ""}${product.titulo} - ${product.concentracion}`
                 : isReloj(product)
                   ? product.modelo
                   : product.modelo}
           </h3>
-          {isPerfume(product) && (
+          {isPerfume(product) && product.marca !== "Tarjeta de Regalo" && (
             <p className="text-sm leading-none capitalize text-gray-600">
               {`${"tamano" in selectedVariant && selectedVariant.tamano}ml | `}
               {product.genero}
@@ -289,7 +305,7 @@ export const VariantSelector = <T extends TProduct>({
     return (
       <section className="flex flex-wrap gap-y-1 gap-x-2 items-center">
         <h4 className="leading-none font-tajawal text-gray-600 cursor-default">
-          Tamaño:
+          {product.marca === "Tarjeta de Regalo" ? "Valor:" : "Tamaño:"}
         </h4>
         <div className="flex gap-2">
           {product.variantes.map((variante: TVariant, index) => {
@@ -305,7 +321,7 @@ export const VariantSelector = <T extends TProduct>({
                     }`}
                   key={`${variante.tamano}-${variante.precio}-${index}`}
                 >
-                  {variante.tamano}ml
+                  {variante.tamano}{product.marca === "Tarjeta de Regalo" ? "" : "ml"}
                 </button>
               );
             }
@@ -320,7 +336,7 @@ export const VariantSelector = <T extends TProduct>({
     return (
       <section className="flex flex-wrap gap-y-1 gap-x-2 items-center">
         <h4 className="leading-none text-gray-600">Color:</h4>
-        <ul className="flex gap-1.5 items-center">
+        <ul className="flex flex-wrap gap-y-1 gap-1.5 max-w-full items-center">
           {product.variantes.map((variante, index) => (
             <li
               key={`${variante.colorDeLaMontura.nombre}-${index}`}
@@ -349,7 +365,7 @@ export const VariantSelector = <T extends TProduct>({
     return (
       <section className="flex flex-wrap gap-y-1 gap-x-2 items-center">
         <h4 className="leading-none text-gray-600">Color:</h4>
-        <ul className="flex gap-2 items-center">
+        <ul className="flex gap-1.5 max-w-full flex-wrap gap-y-1 items-center">
           {product.variantes.map((variante: TRelojVariant, index) => (
             <li
               key={`${variante.colorCaja.nombre}-${index}`}

@@ -13,6 +13,7 @@ import Precio from "../Precio";
 import { TPricing } from "@/app/[type]/[id]/_components/Product";
 import { GoChevronLeft } from "react-icons/go";
 import { isPerfume } from "@/sanity/queries/pages/listingQueries";
+import BlackFridayProductDiscount from "../BlackFridayProductDiscount";
 
 type PremiumLayoutProps = {
   product: TGafaPremium | TRelojPremium | TPerfumePremium;
@@ -30,6 +31,9 @@ const PremiumLayout = ({
   const [modelo] = isPerfumePremium(product)
     ? [product.titulo]
     : [product.modelo];
+
+    const discountPercent = pricing.precioConDescuento ? Math.round((1 - (pricing.precioConDescuento / pricing.precioSinDescuento)) * 100) : null
+
   return (
     <section className="default-paddings w-full flex justify-center lg:py-8">
       <section className="w-full max-w-screen-xl flex flex-col lg:flex-row-reverse lg:items-center gap-8 ">
@@ -39,7 +43,7 @@ const PremiumLayout = ({
         />
 
         <section className="py-5 lg:py-0 flex flex-col w-full basis-full relative grow-0 shrink items-center">
-          <header className="flex flex-col gap-2 w-full">
+          <header className="flex flex-col gap-2.5 w-full">
             <button
               className="flex items-center -ml-1 group"
               onClick={() => window.history.back()}
@@ -49,6 +53,7 @@ const PremiumLayout = ({
                 Volver
               </span>
             </button>
+
             {selectedVariant.unidadesDisponibles === 0 ? (
               <Labels
                 label={"Agotado"}
@@ -68,6 +73,7 @@ const PremiumLayout = ({
                 />
               )
             )}
+              <BlackFridayProductDiscount discountPercent={discountPercent} />
 
             <h1 className="text-zinc-800 text-3xl lg:text-4xl font-bold font-play capitalize">
               {product.marca}
@@ -75,7 +81,7 @@ const PremiumLayout = ({
             <h1 className="text-2xl text-gray-600 font-bold font-play -mt-2 mb-2 capitalize">
               {isPerfume(product) && product.parteDeUnSet && "Set - "}{modelo}
             </h1>
-            {isPerfumePremium(product) && (
+            {isPerfumePremium(product) && product.marca !== "Tarjeta de Regalo" && (
               <h2 className="text-xl -mt-3 mb-2 text-gray-600 font-normal font-play">
               {product.detalles.concentracion} - {"tamano" in selectedVariant && selectedVariant.tamano}ml
               </h2>
